@@ -1,0 +1,25 @@
+Los tres archivos del proyecto:
+
+
+main.py (API):
+
+
+Es el archivo principal que contiene la lógica de la API.
+Aquí configuramos las rutas, la lógica de negocio y conectamos con el resto de los componentes (frontend y manejo de datos).
+
+
+
+datos.py (manejo de datos):
+
+Este archivo se encargará de interactuar con los datos, por ejemplo:
+Consultar datos desde una fuente externa (otra API).
+Gestionar un dataframe usando pandas.
+Leer/escribir datos desde un archivo (CSV, JSON, etc.).
+La idea es separar la lógica relacionada con los datos para mantener el código limpio y organizado.
+
+
+
+frontend.html (interfaz sencilla):
+
+Aquí se diseñará una página HTML básica que interactúe con la API.
+Permitirá realizar solicitudes a las rutas definidas en main.py y mostrar resultados al usuario.
