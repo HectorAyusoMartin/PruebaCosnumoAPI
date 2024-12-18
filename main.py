@@ -1,5 +1,7 @@
 from fastapi import FastAPI #importando la libreria FASTAPI
 from datos import  cargar_datos , filtrar_datos_edad , convertir_json #importando funciones del archivo datos.py
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 
 
@@ -10,6 +12,34 @@ aplicacion=  FastAPI() # aplicacion == instancia de clase FastApi
 #aplicacion sera la base sobre la que definirimeos nuestra ruta y funcionalidad
 
 
+
+
+
+'''
+Sin esta configracion del CORS , los navegadores dan problemnas para cargar datos de la API al frontend
+
+'''
+# Configuración de CORS
+aplicacion.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permite todas las solicitudes (puedes especificar dominios en lugar de "*")
+    allow_methods=["*"],  # Permite todos los métodos HTTP
+    allow_headers=["*"],  # Permite todos los encabezados
+)
+'''
+Sin esta configracion del CORS , los navegadores dan problemnas para cargar datos de la API al frontend
+
+'''
+
+class NuevoDato(BaseModel):
+    id: int
+    nombre: str
+    edad: int
+    profesion: str
+    
+
+
+
 #definimos una ruta principal que responde a solicitudes GET en '/'
 #Esta ruta simplemente devuelve un mensaje de bienvenida para fonfirmar que la API esta funcionando
 
@@ -17,6 +47,10 @@ aplicacion=  FastAPI() # aplicacion == instancia de clase FastApi
 def leer_inicio():
     #retornamos un diccionario que sera convertido automaticamente en JSON
     return {'mensaje':'API funcionando correctamente'}
+
+@aplicacion.get('/jaja')
+def leer_jaja():
+    return {'mensaje':'jajajaja'}
 
 
 
@@ -63,6 +97,9 @@ def enviar_datos(elemento: dict):
     #retornamos los datos recibidos para confirmar su recepcion
     
     return{'recibido': elemento}
+
+
+
 
 
 '''

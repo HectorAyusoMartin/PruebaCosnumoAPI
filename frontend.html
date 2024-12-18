@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interfaz de API</title>
+</head>
+<body>
+    <h1>Interfaz de la API</h1>
+
+    <!-- Sección para mostrar los datos -->
+    <h2>Datos actuales</h2>
+    <button id="cargar-datos">Cargar datos</button>
+    <table border="1" id="tabla-datos">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Edad</th>
+                <th>Profesión</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Las filas de datos se agregarán dinámicamente -->
+        </tbody>
+    </table>
+
+    <!-- Sección para agregar nuevos datos -->
+    <h2>Agregar nuevo dato</h2>
+    <form id="form-agregar">
+        <label for="id">ID:</label>
+        <input type="number" id="id" name="id" required><br><br>
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required><br><br>
+        <label for="edad">Edad:</label>
+        <input type="number" id="edad" name="edad" required><br><br>
+        <label for="profesion">Profesión:</label>
+        <input type="text" id="profesion" name="profesion" required><br><br>
+        <button type="submit">Agregar dato</button>
+    </form>
+
+    <script>
+        const API_URL = "http://127.0.0.1:8000";
+
+        // Función para cargar y mostrar los datos en la tabla
+        document.getElementById('cargar-datos').addEventListener('click', async () => {
+            try {
+                const respuesta = await fetch(`${API_URL}/datos`);
+                const datos = await respuesta.json();
+
+                const tabla = document.getElementById('tabla-datos').querySelector('tbody');
+                tabla.innerHTML = ""; // Limpiar la tabla antes de agregar datos
+
+                datos.forEach(dato => {
+                    const fila = document.createElement('tr');
+                    fila.innerHTML = `
+                        <td>${dato.id}</td>
+                        <td>${dato.nombre}</td>
+                        <td>${dato.edad}</td>
+                        <td>${dato.profesion}</td>
+                    `;
+                    tabla.appendChild(fila);
+                });
+            } catch (error) {
+                alert("Error al cargar los datos: " + error.message);
+            }
+        });
+
+        // Función para enviar un nuevo dato a la API
+        document.getElementById('form-agregar').addEventListener('submit', async (evento) => {
+            evento.preventDefault(); // Evitar que el formulario recargue la página
+
+            const nuevoDato = {
+                id: parseInt(document.getElementById('id').value),
+                nombre: document.getElementById('nombre').value,
+                edad: parseInt(document.getElementById('edad').value),
+                profesion: document.getElementById('profesion').value,
+            };
+
+            try {
+                const respuesta = await fetch(`${API_URL}/datos`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(nuevoDato),
+                });
+
+                if (respuesta.ok) {
+                    alert("Dato agregado con éxito");
+                    document.getElementById('form-agregar').reset(); // Limpiar el formulario
+                } else {
+                    alert("Error al agregar el dato");
+                }
+            } catch (error) {
+                alert("Error al agregar el dato: " + error.message);
+            }
+        });
+    </script>
+</body>
+</html>
