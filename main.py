@@ -1,4 +1,8 @@
 from fastapi import FastAPI #importando la libreria FASTAPI
+from datos import  cargar_datos , filtrar_datos_edad , convertir_json #importando funciones del archivo datos.py
+
+
+
 
 
 
@@ -10,16 +14,42 @@ aplicacion=  FastAPI() # aplicacion == instancia de clase FastApi
 #Esta ruta simplemente devuelve un mensaje de bienvenida para fonfirmar que la API esta funcionando
 
 @aplicacion.get("/")
-
 def leer_inicio():
     #retornamos un diccionario que sera convertido automaticamente en JSON
     return {'mensaje':'API funcionando correctamente'}
+
+
+
+
+
+
+#Ruta para obtener todos los datos
+@aplicacion.get('/datos')
+def obtener_todos_los_datos():
+    
+    dataframe = cargar_datos() #llama a la funcion car dat de el archivo datos.py donde crea el df y lo devuelve
+    
+    return convertir_json(dataframe) #llama a la funcion dela rchivo datos.py que convierte un df dado a un JSON
+
+
+
+#Ruta para filtrar datos por edad minima
+@aplicacion.get('/datos/filtrar')
+def obtener_datos_filtrados(edad_minima:int):
+    dataframe = cargar_datos()
+    dataframe_filtrado = filtrar_datos_edad(dataframe,edad_minima)
+    return convertir_json(dataframe_filtrado)
+    
+
+
+
+
+
 
 #definimos una ruta GET en datos para devolver datos simulados
 #esta ruta puede servir como ejemplo para recuperar informacion
 
 @aplicacion.get('/datos')
-
 def obtener_datos():
     #retornamos un ejemplo de datos, representado por un diccionario
     
@@ -29,7 +59,6 @@ def obtener_datos():
 #aqui usamos un paramtro llamado elemento para representar los datos enviados.
 
 @aplicacion.post('/datos')
-
 def enviar_datos(elemento: dict):
     #retornamos los datos recibidos para confirmar su recepcion
     
